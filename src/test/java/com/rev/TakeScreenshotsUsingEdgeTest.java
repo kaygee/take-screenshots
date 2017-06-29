@@ -35,6 +35,7 @@ public class TakeScreenshotsUsingEdgeTest {
             System.setProperty("webdriver.edge.driver", "C:\\MicrosoftWebDriver.exe");
             webDriver = provideEdgeDriver();
         } catch (IllegalArgumentException e) {
+            LOG.info(e.getLocalizedMessage());
             System.exit(1);
         }
         webDriver.manage().deleteAllCookies();
