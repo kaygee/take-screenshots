@@ -21,6 +21,7 @@ import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 import ru.yandex.qatools.ashot.shooting.cutter.CutStrategy;
 import ru.yandex.qatools.ashot.shooting.cutter.FixedCutStrategy;
+import util.FilenameCleaner;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -58,8 +59,9 @@ public class TakeScreenshotsOfPathsTest {
                 float dpr = 2;
                 CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
                 Screenshot screenshot = getScreenshot(dpr, cutStrategy);
-                String filename = getDriverType(webDriver) + webDriver.getCurrentUrl().replace("/", "_").replace(":",
-                        "").replace("http", "").replace("https", "") + EXTENSION;
+                String filename = FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver
+                        .getCurrentUrl() + "_" + EXTENSION).replace("http", "").replace("https", "");
+                LOG.info("Filename [" + filename + "].");
                 ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
             }
         } catch (Exception e) {
