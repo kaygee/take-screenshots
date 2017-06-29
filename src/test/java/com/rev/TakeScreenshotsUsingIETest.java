@@ -26,6 +26,7 @@ public class TakeScreenshotsUsingIETest {
     @Before
     public void setWebDriver() {
         try {
+            System.setProperty("webdriver.ie.driver", "C:\\iexploredriver.exe");
             webDriver = provideInternetExplorerDriver();
         } catch (IllegalArgumentException e) {
             System.exit(1);
