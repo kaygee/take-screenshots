@@ -38,20 +38,26 @@ public class TakeScreenshotsUsingEdgeTest {
             LOG.info(e.getLocalizedMessage());
             System.exit(1);
         }
+        LOG.info("About to delete cookies");
         webDriver.manage().deleteAllCookies();
+        LOG.info("About to maximize");
         webDriver.manage().window().maximize();
+        LOG.info("About to check for null driver");
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
     @After
     public void afterEveryTest() {
+        LOG.info("Quitting webDriver");
         webDriver.quit();
     }
 
     @Test
     public void takeScreenshots() {
+        LOG.info("In take screenshots method.");
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
+            LOG.info("About to get YAML file.");
             Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
             for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
                 LOG.info("Getting [" + URL + entry.getValue() + "].");
