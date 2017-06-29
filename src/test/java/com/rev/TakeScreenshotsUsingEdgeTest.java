@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
@@ -64,11 +65,12 @@ public class TakeScreenshotsUsingEdgeTest {
     }
 
     private WebDriver provideEdgeDriver() {
-        return new EdgeDriver();
+        DesiredCapabilities capabilities = DesiredCapabilities.edge();
+        return new EdgeDriver(capabilities);
     }
 
     private String getDriverType(WebDriver webDriver) {
-        if (webDriver instanceof InternetExplorerDriver) {
+        if (webDriver instanceof EdgeDriver) {
             return "IE";
         } else {
             throw new RuntimeException();
