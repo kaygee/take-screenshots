@@ -78,8 +78,7 @@ public class TakeScreenshotsUsingEdgeTest {
     }
 
     private String getFilename() {
-        return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl().replace("https", "") + "_" +
-                EXTENSION);
+        return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl().replace("https", "") + EXTENSION);
     }
 
     private Screenshot getScreenshot() {
