@@ -27,7 +27,7 @@ public class TakeScreenshotsUsingEdgeTest {
     @Before
     public void setWebDriver() {
         try {
-            System.setProperty("webdriver.ie.driver", "C:\\IEDriverServer.exe");
+            System.setProperty("webdriver.edge.driver", "C:\\MicrosoftWebDriver.exe");
             webDriver = provideEdgeDriver();
         } catch (IllegalArgumentException e) {
             System.exit(1);
