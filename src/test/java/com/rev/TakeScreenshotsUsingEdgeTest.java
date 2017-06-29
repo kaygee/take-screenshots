@@ -9,6 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -32,12 +34,12 @@ public class TakeScreenshotsUsingEdgeTest {
 
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
-    protected WebDriver webDriver;
+    private WebDriver webDriver;
 
-    @Parameterized.Parameter
-    String currentPath;
+    @Parameter
+    public String currentPath;
 
-    @Parameterized.Parameters
+    @Parameters
     public static Iterable<? extends Object> data() throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
