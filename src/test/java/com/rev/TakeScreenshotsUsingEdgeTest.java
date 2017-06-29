@@ -31,7 +31,7 @@ import java.util.Map;
 public class TakeScreenshotsUsingEdgeTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsUsingEdgeTest.class);
-
+    private static final String MAINTENANCE_TITLE = "Rev.com will be back soon";
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
     private WebDriver webDriver;
@@ -71,6 +71,10 @@ public class TakeScreenshotsUsingEdgeTest {
     @Test
     public void takeScreenshots() throws IOException {
         webDriver.get(URL + currentPath);
+        if (webDriver.getTitle().contains(MAINTENANCE_TITLE)) {
+            LOG.info(MAINTENANCE_TITLE);
+            System.exit(1);
+        }
         Screenshot screenshot = getScreenshot();
         String filename = getFilename();
         LOG.info("Filename [" + filename + "].");
