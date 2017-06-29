@@ -77,8 +77,9 @@ public class TakeScreenshotsUsingEdgeTest {
     }
 
     private WebDriver provideEdgeDriver() {
+        LOG.info("Providing the Edge driver.");
         DesiredCapabilities capabilities = DesiredCapabilities.edge();
-        return new EdgeDriver(capabilities);
+        return new EdgeDriver();
     }
 
 }
