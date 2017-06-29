@@ -73,7 +73,7 @@ public class TakeScreenshotsUsingEdgeTest {
         String filename = getFilename();
         LOG.info("Filename [" + filename + "].");
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
-
+    }
 
     private String getFilename() {
         return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl().replace("https", "") + "_" +
