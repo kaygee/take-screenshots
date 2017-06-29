@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
@@ -38,26 +38,31 @@ public class TakeScreenshotsUsingEdgeTest {
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
+    @After
+    public void afterEveryTest() {
+        webDriver.quit();
+    }
+
     @Test
     public void takeScreenshots() {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
             Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
             for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
-                webDriver.navigate().to(URL + entry.getValue());
+                webDriver.get(URL + entry.getValue());
                 Screenshot screenshot = getScreenshot();
                 String filename = getFilename();
                 ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
             }
         } catch (Exception e) {
+            System.out.println("Ouch.");
             e.printStackTrace();
         }
-        webDriver.quit();
     }
 
     private String getFilename() {
-        return FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver.getCurrentUrl() + "_" +
-                EXTENSION).replace("http", "").replace("https", "");
+        return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
+                ("http", "").replace("https", "");
     }
 
     private Screenshot getScreenshot() {
@@ -69,11 +74,4 @@ public class TakeScreenshotsUsingEdgeTest {
         return new EdgeDriver(capabilities);
     }
 
-    private String getDriverType(WebDriver webDriver) {
-        if (webDriver instanceof EdgeDriver) {
-            return "IE";
-        } else {
-            throw new RuntimeException();
-        }
-    }
 }
