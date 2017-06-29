@@ -81,8 +81,8 @@ public class TakeScreenshotsUsingChromeTest {
     }
 
     private String getFilename() {
-        return FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver.getCurrentUrl() + "_" +
-                EXTENSION).replace("http", "").replace("https", "");
+        return FilenameCleaner.cleanFileName("Chrome" + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
+                ("https", "");
     }
 
     private Screenshot getScreenshot() {
@@ -110,11 +110,4 @@ public class TakeScreenshotsUsingChromeTest {
         return new ChromeDriver(desiredCapabilities);
     }
 
-    private String getDriverType(WebDriver webDriver) {
-        if (webDriver instanceof ChromeDriver) {
-            return "Chrome";
-        } else {
-            throw new RuntimeException();
-        }
-    }
 }
