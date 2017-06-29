@@ -71,14 +71,18 @@ public class TakeScreenshotsUsingEdgeTest {
     @Test
     public void takeScreenshots() throws IOException {
         webDriver.get(URL + currentPath);
-        if (webDriver.getTitle().contains(MAINTENANCE_TITLE)) {
-            LOG.info(MAINTENANCE_TITLE);
-            System.exit(1);
-        }
+        exitIfMaintenance();
         Screenshot screenshot = getScreenshot();
         String filename = getFilename();
         LOG.info("Filename [" + filename + "].");
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
+    }
+
+    private void exitIfMaintenance() {
+        if (webDriver.getTitle().contains(MAINTENANCE_TITLE)) {
+            LOG.info(MAINTENANCE_TITLE);
+            System.exit(1);
+        }
     }
 
     private String getFilename() {

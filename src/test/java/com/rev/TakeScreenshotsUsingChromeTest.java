@@ -4,8 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -13,6 +16,8 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
@@ -22,21 +27,40 @@ import util.FilenameCleaner;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
 public class TakeScreenshotsUsingChromeTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsUsingChromeTest.class);
+    private static final String MAINTENANCE_TITLE = "Rev.com will be back soon";
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
     protected WebDriver webDriver;
+
+    @Parameterized.Parameter
+    public String currentPath;
+
+    @Parameterized.Parameters
+    public static Iterable<? extends Object> data() throws IOException {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
+        ArrayList<String> paths = new ArrayList<>();
+        for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
+            paths.add(entry.getValue());
+        }
+        return paths;
+    }
 
     @Before
     public void setWebDriver() {
         try {
             webDriver = provideChromeDriver();
         } catch (IllegalArgumentException e) {
+            LOG.info(e.getLocalizedMessage());
             System.exit(1);
         }
         webDriver.manage().deleteAllCookies();
@@ -44,40 +68,37 @@ public class TakeScreenshotsUsingChromeTest {
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
-    @Test
-    public void takeScreenshots() {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        try {
-            Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
-            for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
-                webDriver.navigate().to(URL + entry.getValue());
-                Screenshot screenshot = getScreenshot();
-                String filename = getFilename();
-                ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    @After
+    public void afterEachTest() {
         webDriver.quit();
     }
 
     @Test
-    public void takeRetinaScreenshots() {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        try {
-            Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
-            for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
-                webDriver.navigate().to(URL + entry.getValue());
-                float dpr = 2;
-                CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
-                Screenshot screenshot = getRetinaScreenshot(dpr, cutStrategy);
-                String filename = getFilename();
-                ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void takeScreenshots() throws IOException {
+        webDriver.navigate().to(URL + currentPath);
+        exitIfMaintenance();
+        Screenshot screenshot = getScreenshot();
+        String filename = getFilename();
+        ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
+    }
+
+    @Ignore("Only for running on Retina laptops.")
+    @Test
+    public void takeRetinaScreenshots() throws IOException {
+        webDriver.navigate().to(URL + currentPath);
+        exitIfMaintenance();
+        float dpr = 2;
+        CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
+        Screenshot screenshot = getRetinaScreenshot(dpr, cutStrategy);
+        String filename = getFilename();
+        ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
+    }
+
+    private void exitIfMaintenance() {
+        if (webDriver.getTitle().contains(MAINTENANCE_TITLE)) {
+            LOG.info(MAINTENANCE_TITLE);
+            System.exit(1);
         }
-        webDriver.quit();
     }
 
     private String getFilename() {
