@@ -7,6 +7,8 @@ import com.rev.beans.Path;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -19,8 +21,11 @@ import util.FilenameCleaner;
 
 import javax.imageio.ImageIO;
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
+@RunWith(Parameterized.class)
 public class TakeScreenshotsUsingEdgeTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsUsingEdgeTest.class);
@@ -28,6 +33,20 @@ public class TakeScreenshotsUsingEdgeTest {
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
     protected WebDriver webDriver;
+
+    @Parameterized.Parameter
+    String currentPath;
+
+    @Parameterized.Parameters
+    public static Iterable<? extends Object> data() throws IOException {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
+        ArrayList<String> paths = new ArrayList<>();
+        for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
+            paths.add(entry.getValue());
+        }
+        return paths;
+    }
 
     @Before
     public void setWebDriver() {
@@ -48,26 +67,17 @@ public class TakeScreenshotsUsingEdgeTest {
     }
 
     @Test
-    public void takeScreenshots() {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
-        try {
-            Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
-            for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
-                LOG.info("Getting [" + URL + entry.getValue() + "].");
-                webDriver.get(URL + entry.getValue());
-                Screenshot screenshot = getScreenshot();
-                String filename = getFilename();
-                LOG.info("Filename [" + filename + "].");
-                ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    public void takeScreenshots() throws IOException {
+        webDriver.get(URL + currentPath);
+        Screenshot screenshot = getScreenshot();
+        String filename = getFilename();
+        LOG.info("Filename [" + filename + "].");
+        ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
+
 
     private String getFilename() {
-        return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
-                ("https", "");
+        return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl().replace("https", "") + "_" +
+                EXTENSION);
     }
 
     private Screenshot getScreenshot() {
