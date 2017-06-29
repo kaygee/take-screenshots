@@ -28,10 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class TakeScreenshotsOfPaths {
+public class TakeScreenshotsOfPathsTest {
 
     protected WebDriver webDriver;
-    private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsOfPaths.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsOfPathsTest.class);
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
 
