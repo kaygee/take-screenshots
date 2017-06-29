@@ -56,22 +56,45 @@ public class TakeScreenshotsOfPathsTest {
             for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
                 LOG.info("Navigating to [" + URL + entry.getValue() + "].");
                 webDriver.navigate().to(URL + entry.getValue());
-                float dpr = 2;
-                CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
-                Screenshot screenshot = getScreenshot(dpr, cutStrategy);
+                Screenshot screenshot = getScreenshot();
                 String filename = FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver
                         .getCurrentUrl() + "_" + EXTENSION).replace("http", "").replace("https", "");
                 LOG.info("Filename [" + filename + "].");
                 ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
             }
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         webDriver.quit();
     }
 
-    private Screenshot getScreenshot(float dpr, CutStrategy cutStrategy) {
+    @Test
+    public void takeRetinaScreenshots() {
+        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+        try {
+            Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
+            for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
+                LOG.info("Navigating to [" + URL + entry.getValue() + "].");
+                webDriver.navigate().to(URL + entry.getValue());
+                float dpr = 2;
+                CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
+                Screenshot screenshot = getRetinaScreenshot(dpr, cutStrategy);
+                String filename = FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver
+                        .getCurrentUrl() + "_" + EXTENSION).replace("http", "").replace("https", "");
+                LOG.info("Filename [" + filename + "].");
+                ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        webDriver.quit();
+    }
+
+    private Screenshot getScreenshot() {
+        return new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(webDriver);
+    }
+
+    private Screenshot getRetinaScreenshot(float dpr, CutStrategy cutStrategy) {
         return new AShot().
                 shootingStrategy(ShootingStrategies.viewportRetina(100, cutStrategy, dpr)).takeScreenshot(webDriver);
     }
