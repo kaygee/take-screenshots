@@ -7,6 +7,7 @@ import com.rev.beans.Path;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
@@ -17,7 +18,7 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.Map;
 
-public class TakeScreenshotsUsingIETest {
+public class TakeScreenshotsUsingEdgeTest {
 
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
@@ -27,7 +28,7 @@ public class TakeScreenshotsUsingIETest {
     public void setWebDriver() {
         try {
             System.setProperty("webdriver.ie.driver", "C:\\IEDriverServer.exe");
-            webDriver = provideInternetExplorerDriver();
+            webDriver = provideEdgeDriver();
         } catch (IllegalArgumentException e) {
             System.exit(1);
         }
@@ -62,8 +63,8 @@ public class TakeScreenshotsUsingIETest {
         return new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(webDriver);
     }
 
-    private WebDriver provideInternetExplorerDriver() {
-        return new InternetExplorerDriver();
+    private WebDriver provideEdgeDriver() {
+        return new EdgeDriver();
     }
 
     private String getDriverType(WebDriver webDriver) {
