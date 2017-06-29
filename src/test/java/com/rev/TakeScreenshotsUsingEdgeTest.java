@@ -39,7 +39,7 @@ public class TakeScreenshotsUsingEdgeTest {
             System.exit(1);
         }
         LOG.info("About to delete cookies");
-        webDriver.manage().deleteAllCookies();
+//        webDriver.manage().deleteAllCookies();
         LOG.info("About to maximize");
         webDriver.manage().window().maximize();
         LOG.info("About to check for null driver");
