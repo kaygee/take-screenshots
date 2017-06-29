@@ -10,6 +10,8 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
@@ -20,6 +22,8 @@ import java.io.File;
 import java.util.Map;
 
 public class TakeScreenshotsUsingEdgeTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsUsingEdgeTest.class);
 
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
@@ -49,13 +53,15 @@ public class TakeScreenshotsUsingEdgeTest {
         try {
             Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
             for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
+                LOG.info("Getting [" + URL + entry.getValue() + "].");
                 webDriver.get(URL + entry.getValue());
                 Screenshot screenshot = getScreenshot();
                 String filename = getFilename();
+                LOG.info("Filename [" + filename + "].");
                 ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
             }
         } catch (Exception e) {
-            System.out.println("Ouch.");
+            LOG.info("Ouch.");
             e.printStackTrace();
         }
     }
