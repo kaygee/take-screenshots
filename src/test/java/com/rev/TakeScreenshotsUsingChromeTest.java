@@ -9,13 +9,10 @@ import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
 import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
@@ -29,12 +26,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
-public class TakeScreenshotsOfPathsTest {
+public class TakeScreenshotsUsingChromeTest {
 
-    protected WebDriver webDriver;
-    private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsOfPathsTest.class);
     private static final String EXTENSION = ".PNG";
     private static final String URL = "http://stage.rev.com";
+    protected WebDriver webDriver;
 
     @Before
     public void setWebDriver() {
@@ -54,12 +50,9 @@ public class TakeScreenshotsOfPathsTest {
         try {
             Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
             for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
-                LOG.info("Navigating to [" + URL + entry.getValue() + "].");
                 webDriver.navigate().to(URL + entry.getValue());
                 Screenshot screenshot = getScreenshot();
-                String filename = FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver
-                        .getCurrentUrl() + "_" + EXTENSION).replace("http", "").replace("https", "");
-                LOG.info("Filename [" + filename + "].");
+                String filename = getFilename();
                 ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
             }
         } catch (Exception e) {
@@ -74,20 +67,22 @@ public class TakeScreenshotsOfPathsTest {
         try {
             Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
             for (Map.Entry<String, String> entry : path.getPaths().entrySet()) {
-                LOG.info("Navigating to [" + URL + entry.getValue() + "].");
                 webDriver.navigate().to(URL + entry.getValue());
                 float dpr = 2;
                 CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
                 Screenshot screenshot = getRetinaScreenshot(dpr, cutStrategy);
-                String filename = FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver
-                        .getCurrentUrl() + "_" + EXTENSION).replace("http", "").replace("https", "");
-                LOG.info("Filename [" + filename + "].");
+                String filename = getFilename();
                 ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         webDriver.quit();
+    }
+
+    private String getFilename() {
+        return FilenameCleaner.cleanFileName(getDriverType(webDriver) + "_" + webDriver.getCurrentUrl() + "_" +
+                EXTENSION).replace("http", "").replace("https", "");
     }
 
     private Screenshot getScreenshot() {
@@ -116,9 +111,7 @@ public class TakeScreenshotsOfPathsTest {
     }
 
     private String getDriverType(WebDriver webDriver) {
-        if (webDriver instanceof FirefoxDriver) {
-            return "Firefox";
-        } else if (webDriver instanceof ChromeDriver) {
+        if (webDriver instanceof ChromeDriver) {
             return "Chrome";
         } else {
             throw new RuntimeException();
