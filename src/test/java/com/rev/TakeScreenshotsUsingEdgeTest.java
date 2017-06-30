@@ -4,16 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
+import io.github.bonigarcia.wdm.EdgeDriverManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
@@ -36,8 +36,16 @@ public class TakeScreenshotsUsingEdgeTest {
     private static final String URL = "http://stage.rev.com";
     private WebDriver webDriver;
 
-    @Parameter
+    public TakeScreenshotsUsingEdgeTest(String currentPath) {
+        this.currentPath = currentPath;
+    }
+
     public String currentPath;
+
+    @BeforeClass
+    public static void setupClass() {
+        EdgeDriverManager.getInstance().setup();
+    }
 
     @Parameters
     public static Iterable<? extends Object> data() throws IOException {
@@ -52,20 +60,16 @@ public class TakeScreenshotsUsingEdgeTest {
 
     @Before
     public void setWebDriver() {
-        try {
-            System.setProperty("webdriver.edge.driver", "C:\\MicrosoftWebDriver.exe");
-            webDriver = provideEdgeDriver();
-        } catch (IllegalArgumentException e) {
-            LOG.info(e.getLocalizedMessage());
-            System.exit(1);
-        }
+        webDriver = new EdgeDriver();
         webDriver.manage().window().maximize();
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
     @After
     public void afterEveryTest() {
-        webDriver.quit();
+        if (webDriver != null) {
+            webDriver.quit();
+        }
     }
 
     @Test
@@ -91,11 +95,6 @@ public class TakeScreenshotsUsingEdgeTest {
 
     private Screenshot getScreenshot() {
         return new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(webDriver);
-    }
-
-    private WebDriver provideEdgeDriver() {
-        DesiredCapabilities capabilities = DesiredCapabilities.edge();
-        return new EdgeDriver(capabilities);
     }
 
 }

@@ -4,18 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
+import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.yandex.qatools.ashot.AShot;
@@ -29,10 +27,9 @@ import javax.imageio.ImageIO;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 
+@RunWith(Parameterized.class)
 public class TakeScreenshotsUsingChromeTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsUsingChromeTest.class);
@@ -41,7 +38,6 @@ public class TakeScreenshotsUsingChromeTest {
     private static final String URL = "http://stage.rev.com";
     protected WebDriver webDriver;
 
-    @Parameterized.Parameter
     public String currentPath;
 
     @Parameterized.Parameters
@@ -55,14 +51,18 @@ public class TakeScreenshotsUsingChromeTest {
         return paths;
     }
 
+    public TakeScreenshotsUsingChromeTest(String currentPath) {
+        this.currentPath = currentPath;
+    }
+
+    @BeforeClass
+    public static void setupClass() {
+        ChromeDriverManager.getInstance().setup();
+    }
+
     @Before
     public void setWebDriver() {
-        try {
-            webDriver = provideChromeDriver();
-        } catch (IllegalArgumentException e) {
-            LOG.info(e.getLocalizedMessage());
-            System.exit(1);
-        }
+        webDriver = new ChromeDriver();
         webDriver.manage().deleteAllCookies();
         webDriver.manage().window().maximize();
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
@@ -70,7 +70,9 @@ public class TakeScreenshotsUsingChromeTest {
 
     @After
     public void afterEachTest() {
-        webDriver.quit();
+        if (webDriver != null) {
+            webDriver.quit();
+        }
     }
 
     @Test
@@ -113,22 +115,6 @@ public class TakeScreenshotsUsingChromeTest {
     private Screenshot getRetinaScreenshot(float dpr, CutStrategy cutStrategy) {
         return new AShot().
                 shootingStrategy(ShootingStrategies.viewportRetina(100, cutStrategy, dpr)).takeScreenshot(webDriver);
-    }
-
-    private WebDriver provideChromeDriver() {
-        DesiredCapabilities desiredCapabilities = DesiredCapabilities.chrome();
-
-        ChromeOptions options = new ChromeOptions();
-        Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put("credentials_enable_service", false);
-        prefs.put("profile.password_manager_enabled", false);
-        options.setExperimentalOption("prefs", prefs);
-        desiredCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
-
-        LoggingPreferences logPrefs = new LoggingPreferences();
-        logPrefs.enable(LogType.BROWSER, Level.ALL);
-        desiredCapabilities.setCapability(CapabilityType.LOGGING_PREFS, logPrefs);
-        return new ChromeDriver(desiredCapabilities);
     }
 
 }
