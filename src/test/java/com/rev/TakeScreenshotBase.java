@@ -39,8 +39,8 @@ public class TakeScreenshotBase {
         String expectedPath = new URL(url).getPath();
         String actualPath = new URL(webDriver.getCurrentUrl()).getPath();
         if (expectedPath.equals(actualPath)) {
-            return FilenameCleaner.cleanFileName(browser + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
-                    ("https", "");
+            return FilenameCleaner.cleanFileName(browser + "_" + webDriver.getCurrentUrl().replace("/", "_") +
+                    EXTENSION).replace("https", "");
         } else {
             throw new RuntimeException("There's an unexpected redirect. Expected [" + expectedPath + "] but got [" +
                     actualPath + "].");
