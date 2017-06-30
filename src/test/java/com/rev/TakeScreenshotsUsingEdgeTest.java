@@ -10,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.edge.EdgeDriver;
 import ru.yandex.qatools.ashot.Screenshot;
@@ -24,11 +25,9 @@ import java.util.Map;
 public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
 
     private static final String MS_WEBDRIVER_VERSION = "3.14393";
-    public String currentPath;
 
-    public TakeScreenshotsUsingEdgeTest(String currentPath) {
-        this.currentPath = currentPath;
-    }
+    @Parameter
+    public String currentPath;
 
     @BeforeClass
     public static void setupClass() {

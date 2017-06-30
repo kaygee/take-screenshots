@@ -10,6 +10,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import ru.yandex.qatools.ashot.Screenshot;
 
@@ -22,9 +24,10 @@ import java.util.Map;
 @RunWith(Parameterized.class)
 public class TakeScreenshotsUsingFirefoxTest extends TakeScreenshotBase {
 
+    @Parameter
     public String currentPath;
 
-    @Parameterized.Parameters
+    @Parameters
     public static Iterable<? extends Object> data() throws IOException {
         ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         Path path = mapper.readValue(new File("./resources/spider_paths.yaml"), Path.class);
@@ -33,10 +36,6 @@ public class TakeScreenshotsUsingFirefoxTest extends TakeScreenshotBase {
             paths.add(entry.getValue());
         }
         return paths;
-    }
-
-    public TakeScreenshotsUsingFirefoxTest(String currentPath) {
-        this.currentPath = currentPath;
     }
 
     @BeforeClass
