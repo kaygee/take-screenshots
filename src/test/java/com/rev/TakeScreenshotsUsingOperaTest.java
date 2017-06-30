@@ -4,15 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
-import io.github.bonigarcia.wdm.EdgeDriverManager;
+import io.github.bonigarcia.wdm.OperaDriverManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.opera.OperaDriver;
 import ru.yandex.qatools.ashot.Screenshot;
 
 import javax.imageio.ImageIO;
@@ -21,17 +20,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-@RunWith(Parameterized.class)
-public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
-
-    private static final String MS_WEBDRIVER_VERSION = "3.14393";
+public class TakeScreenshotsUsingOperaTest extends TakeScreenshotBase {
 
     @Parameter
     public String currentPath;
 
     @BeforeClass
     public static void setupClass() {
-        EdgeDriverManager.getInstance().version(MS_WEBDRIVER_VERSION).setup();
+        OperaDriverManager.getInstance().setup();
     }
 
     @Parameters
@@ -47,11 +43,12 @@ public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
 
     @Before
     public void setWebDriver() {
-        webDriver = new EdgeDriver();
+        webDriver = new OperaDriver();
         webDriver.manage().window().maximize();
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
+    @Ignore("webdrivermanager can't find the binary at the moment.")
     @Test
     public void takeScreenshots() throws IOException {
         webDriver.get(URL + currentPath);
@@ -60,5 +57,4 @@ public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
         String filename = getFilename("Edge", URL + currentPath);
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
     }
-
 }
