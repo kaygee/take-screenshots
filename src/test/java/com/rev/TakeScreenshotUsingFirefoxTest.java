@@ -8,6 +8,7 @@ import io.github.bonigarcia.wdm.FirefoxDriverManager;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import ru.yandex.qatools.ashot.Screenshot;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
+@RunWith(Parameterized.class)
 public class TakeScreenshotUsingFirefoxTest extends TakeScreenshotBase {
 
     public String currentPath;
