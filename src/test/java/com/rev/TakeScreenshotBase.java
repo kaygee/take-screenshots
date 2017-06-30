@@ -32,8 +32,8 @@ public class TakeScreenshotBase {
         }
     }
 
-    protected String getFilename() {
-        return FilenameCleaner.cleanFileName("Chrome" + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
+    protected String getFilename(String browser) {
+        return FilenameCleaner.cleanFileName(browser + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
                 ("https", "");
     }
 

@@ -60,7 +60,7 @@ public class TakeScreenshotsUsingChromeTest extends TakeScreenshotBase {
         webDriver.navigate().to(URL + currentPath);
         exitIfMaintenance();
         Screenshot screenshot = getScreenshot();
-        String filename = getFilename();
+        String filename = getFilename("Chrome");
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
     }
 
@@ -72,7 +72,7 @@ public class TakeScreenshotsUsingChromeTest extends TakeScreenshotBase {
         float dpr = 2;
         CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
         Screenshot screenshot = getRetinaScreenshot(dpr, cutStrategy);
-        String filename = getFilename();
+        String filename = getFilename("Chrome");
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
     }
 

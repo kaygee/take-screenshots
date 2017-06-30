@@ -5,21 +5,14 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
 import io.github.bonigarcia.wdm.EdgeDriverManager;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.edge.EdgeDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.yandex.qatools.ashot.AShot;
 import ru.yandex.qatools.ashot.Screenshot;
-import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
-import util.FilenameCleaner;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -28,13 +21,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @RunWith(Parameterized.class)
-public class TakeScreenshotsUsingEdgeTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotsUsingEdgeTest.class);
-    private static final String MAINTENANCE_TITLE = "Rev.com will be back soon";
-    private static final String EXTENSION = ".PNG";
-    private static final String URL = "http://stage.rev.com";
-    private WebDriver webDriver;
+public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
 
     public TakeScreenshotsUsingEdgeTest(String currentPath) {
         this.currentPath = currentPath;
@@ -65,36 +52,13 @@ public class TakeScreenshotsUsingEdgeTest {
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
-    @After
-    public void afterEveryTest() {
-        if (webDriver != null) {
-            webDriver.quit();
-        }
-    }
-
     @Test
     public void takeScreenshots() throws IOException {
         webDriver.get(URL + currentPath);
         exitIfMaintenance();
         Screenshot screenshot = getScreenshot();
-        String filename = getFilename();
-        LOG.info("Filename [" + filename + "].");
+        String filename = getFilename("Edge");
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
-    }
-
-    private void exitIfMaintenance() {
-        if (webDriver.getTitle().contains(MAINTENANCE_TITLE)) {
-            LOG.info(MAINTENANCE_TITLE);
-            System.exit(1);
-        }
-    }
-
-    private String getFilename() {
-        return FilenameCleaner.cleanFileName("EDGE" + "_" + webDriver.getCurrentUrl().replace("https", "") + EXTENSION);
-    }
-
-    private Screenshot getScreenshot() {
-        return new AShot().shootingStrategy(ShootingStrategies.viewportPasting(100)).takeScreenshot(webDriver);
     }
 
 }
