@@ -57,7 +57,7 @@ public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
         webDriver.get(URL + currentPath);
         exitIfMaintenance();
         Screenshot screenshot = getScreenshot();
-        String filename = getFilename("Edge");
+        String filename = getFilename("Edge", URL + currentPath);
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
     }
 

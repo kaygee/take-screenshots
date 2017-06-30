@@ -56,7 +56,7 @@ public class TakeScreenshotsUsingFirefoxTest extends TakeScreenshotBase {
         webDriver.navigate().to(URL + currentPath);
         exitIfMaintenance();
         Screenshot screenshot = getScreenshot();
-        String filename = getFilename("Firefox");
+        String filename = getFilename("Firefox", URL + currentPath);
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
     }
 

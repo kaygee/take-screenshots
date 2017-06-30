@@ -10,6 +10,9 @@ import ru.yandex.qatools.ashot.shooting.ShootingStrategies;
 import ru.yandex.qatools.ashot.shooting.cutter.CutStrategy;
 import util.FilenameCleaner;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class TakeScreenshotBase {
 
     private static final Logger LOG = LoggerFactory.getLogger(TakeScreenshotBase.class);
@@ -32,9 +35,16 @@ public class TakeScreenshotBase {
         }
     }
 
-    protected String getFilename(String browser) {
-        return FilenameCleaner.cleanFileName(browser + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
-                ("https", "");
+    protected String getFilename(String browser, String url) throws MalformedURLException {
+        String expectedPath = new URL(url).getPath();
+        String actualPath = new URL(webDriver.getCurrentUrl()).getPath();
+        if (expectedPath.equals(actualPath)) {
+            return FilenameCleaner.cleanFileName(browser + "_" + webDriver.getCurrentUrl() + "_" + EXTENSION).replace
+                    ("https", "");
+        } else {
+            throw new RuntimeException("There's an unexpected redirect. Expected [" + expectedPath + "] but got [" +
+                    actualPath + "].");
+        }
     }
 
     protected Screenshot getScreenshot() {
