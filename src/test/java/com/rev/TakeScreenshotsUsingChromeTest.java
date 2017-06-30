@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.Parameterized;
@@ -57,21 +55,14 @@ public class TakeScreenshotsUsingChromeTest {
         return paths;
     }
 
-    @BeforeClass
-    public static void setupClass() {
-//        ChromeDriverManager.getInstance().setup();
-    }
-
     @Before
     public void setWebDriver() {
-        ChromeDriverManager.getInstance().setup();
-        webDriver = new ChromeDriver();
-//        try {
-//            webDriver = provideChromeDriver();
-//        } catch (IllegalArgumentException e) {
-//            LOG.info(e.getLocalizedMessage());
-//            System.exit(1);
-//        }
+        try {
+            webDriver = provideChromeDriver();
+        } catch (IllegalArgumentException e) {
+            LOG.info(e.getLocalizedMessage());
+            System.exit(1);
+        }
         webDriver.manage().deleteAllCookies();
         webDriver.manage().window().maximize();
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");

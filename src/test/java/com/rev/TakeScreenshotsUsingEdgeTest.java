@@ -4,10 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
-import io.github.bonigarcia.wdm.EdgeDriverManager;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -52,31 +50,22 @@ public class TakeScreenshotsUsingEdgeTest {
         return paths;
     }
 
-    @BeforeClass
-    public static void setupClass() {
-//        EdgeDriverManager.getInstance().setup();
-    }
-
     @Before
     public void setWebDriver() {
-        EdgeDriverManager.getInstance().version("14393").setup();
-        webDriver = new EdgeDriver();
-        //        try {
-        //            System.setProperty("webdriver.edge.driver", "C:\\MicrosoftWebDriver.exe");
-        //            webDriver = provideEdgeDriver();
-        //        } catch (IllegalArgumentException e) {
-        //            LOG.info(e.getLocalizedMessage());
-        //            System.exit(1);
-        //        }
+        try {
+            System.setProperty("webdriver.edge.driver", "C:\\MicrosoftWebDriver.exe");
+            webDriver = provideEdgeDriver();
+        } catch (IllegalArgumentException e) {
+            LOG.info(e.getLocalizedMessage());
+            System.exit(1);
+        }
         webDriver.manage().window().maximize();
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
     }
 
     @After
     public void afterEveryTest() {
-        if (webDriver != null) {
-            webDriver.quit();
-        }
+        webDriver.quit();
     }
 
     @Test
