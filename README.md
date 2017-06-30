@@ -1,4 +1,4 @@
-#Take Screenshots
+# Take Screenshots
 
 This project takes screenshots of full web pages. The paths of a site are specified in a YAML file named `spider_paths.yaml` in the resources directory.
 
