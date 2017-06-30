@@ -54,11 +54,12 @@ public class TakeScreenshotsUsingEdgeTest {
 
     @BeforeClass
     public static void setupClass() {
-        EdgeDriverManager.getInstance().setup();
+//        EdgeDriverManager.getInstance().setup();
     }
 
     @Before
     public void setWebDriver() {
+        EdgeDriverManager.getInstance().setup();
         webDriver = new EdgeDriver();
         //        try {
         //            System.setProperty("webdriver.edge.driver", "C:\\MicrosoftWebDriver.exe");

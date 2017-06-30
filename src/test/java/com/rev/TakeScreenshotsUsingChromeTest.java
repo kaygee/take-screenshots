@@ -59,11 +59,12 @@ public class TakeScreenshotsUsingChromeTest {
 
     @BeforeClass
     public static void setupClass() {
-        ChromeDriverManager.getInstance().setup();
+//        ChromeDriverManager.getInstance().setup();
     }
 
     @Before
     public void setWebDriver() {
+        ChromeDriverManager.getInstance().setup();
         webDriver = new ChromeDriver();
 //        try {
 //            webDriver = provideChromeDriver();
