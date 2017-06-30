@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @RunWith(Parameterized.class)
-public class TakeScreenshotUsingFirefoxTest extends TakeScreenshotBase {
+public class TakeScreenshotsUsingFirefoxTest extends TakeScreenshotBase {
 
     public String currentPath;
 
@@ -35,7 +35,7 @@ public class TakeScreenshotUsingFirefoxTest extends TakeScreenshotBase {
         return paths;
     }
 
-    public TakeScreenshotUsingFirefoxTest(String currentPath) {
+    public TakeScreenshotsUsingFirefoxTest(String currentPath) {
         this.currentPath = currentPath;
     }
 

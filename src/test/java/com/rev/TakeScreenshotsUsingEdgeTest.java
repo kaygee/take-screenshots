@@ -23,15 +23,16 @@ import java.util.Map;
 @RunWith(Parameterized.class)
 public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
 
+    private static final String MS_WEBDRIVER_VERSION = "3.14393";
+    public String currentPath;
+
     public TakeScreenshotsUsingEdgeTest(String currentPath) {
         this.currentPath = currentPath;
     }
 
-    public String currentPath;
-
     @BeforeClass
     public static void setupClass() {
-        EdgeDriverManager.getInstance().version("3.14393").setup();
+        EdgeDriverManager.getInstance().version(MS_WEBDRIVER_VERSION).setup();
     }
 
     @Parameters
