@@ -4,17 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.google.common.base.Preconditions;
 import com.rev.beans.Path;
-import io.github.bonigarcia.wdm.ChromeDriverManager;
+import io.github.bonigarcia.wdm.FirefoxDriverManager;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import ru.yandex.qatools.ashot.Screenshot;
-import ru.yandex.qatools.ashot.shooting.cutter.CutStrategy;
-import ru.yandex.qatools.ashot.shooting.cutter.FixedCutStrategy;
 
 import javax.imageio.ImageIO;
 import java.io.File;
@@ -22,8 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 
-@RunWith(Parameterized.class)
-public class TakeScreenshotsUsingChromeTest extends TakeScreenshotBase {
+public class TakeScreenshotUsingFirefoxTest extends TakeScreenshotBase {
 
     public String currentPath;
 
@@ -38,18 +34,18 @@ public class TakeScreenshotsUsingChromeTest extends TakeScreenshotBase {
         return paths;
     }
 
-    public TakeScreenshotsUsingChromeTest(String currentPath) {
+    public TakeScreenshotUsingFirefoxTest(String currentPath) {
         this.currentPath = currentPath;
     }
 
     @BeforeClass
     public static void setupClass() {
-        ChromeDriverManager.getInstance().setup();
+        FirefoxDriverManager.getInstance().setup();
     }
 
     @Before
     public void setWebDriver() {
-        webDriver = new ChromeDriver();
+        webDriver = new FirefoxDriver();
         webDriver.manage().deleteAllCookies();
         webDriver.manage().window().maximize();
         Preconditions.checkNotNull(webDriver, "Failed to set up the WebDriver");
@@ -60,18 +56,6 @@ public class TakeScreenshotsUsingChromeTest extends TakeScreenshotBase {
         webDriver.navigate().to(URL + currentPath);
         exitIfMaintenance();
         Screenshot screenshot = getScreenshot();
-        String filename = getFilename();
-        ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
-    }
-
-    @Ignore("Only for running on Retina laptops.")
-    @Test
-    public void takeRetinaScreenshots() throws IOException {
-        webDriver.navigate().to(URL + currentPath);
-        exitIfMaintenance();
-        float dpr = 2;
-        CutStrategy cutStrategy = new FixedCutStrategy(0, 0);
-        Screenshot screenshot = getRetinaScreenshot(dpr, cutStrategy);
         String filename = getFilename();
         ImageIO.write(screenshot.getImage(), "PNG", new File("./target/" + filename));
     }
