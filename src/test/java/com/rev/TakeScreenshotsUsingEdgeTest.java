@@ -31,7 +31,7 @@ public class TakeScreenshotsUsingEdgeTest extends TakeScreenshotBase {
 
     @BeforeClass
     public static void setupClass() {
-        EdgeDriverManager.getInstance().version("14393").setup();
+        EdgeDriverManager.getInstance().version("3.14393").setup();
     }
 
     @Parameters
