@@ -18,7 +18,6 @@ public class TakeScreenshotBase {
     protected static final String URL = "http://stage.rev.com";
     protected WebDriver webDriver;
 
-
     @After
     public void afterEachTest() {
         if (webDriver != null) {
