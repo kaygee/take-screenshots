@@ -26,7 +26,6 @@ paths:
   __press: "/press"
   __careers: "/careers"
   __enterprise: "/enterprise"
-  __api: "/api"
   __reviews: "/reviews"
   __about__terms: "/about/terms"
   __about__privacy: "/about/privacy"
